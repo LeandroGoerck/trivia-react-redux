@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchToken } from '../store/actions';
+import { Link } from 'react-router-dom';
 
 class Login extends React.Component {
   constructor() {
@@ -14,17 +15,17 @@ class Login extends React.Component {
     if (email.length > 0 && name.length > 0) return false;
     return true;
   };
-
-  inputChange = ({ target }) => {
-    const { name, value } = target;
-    this.setState({ [name]: value });
-  };
-
+  
   handleClick = () => {
     const { history, tokenDispatch } = this.props;
     tokenDispatch();
     history.push('/Game');
   }
+
+  inputChange = ({ target }) => {
+    const { name, value } = target;
+    this.setState({ [name]: value });
+  };
 
   render() {
     const { email, name } = this.state;
@@ -57,6 +58,10 @@ class Login extends React.Component {
         >
           Play
         </button>
+
+        <Link to="/settings">
+          <button data-testid="btn-settings" type="button">Settings</button>
+        </Link>
       </form>
     );
   }
