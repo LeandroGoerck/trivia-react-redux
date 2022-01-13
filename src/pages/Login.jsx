@@ -15,7 +15,7 @@ class Login extends React.Component {
     if (email.length > 0 && name.length > 0) return false;
     return true;
   };
-  
+
   handleClick = () => {
     const { history, tokenDispatch } = this.props;
     tokenDispatch();
