@@ -1,9 +1,16 @@
 export const REQUEST_TOKEN = 'REQUEST_TOKEN';
 export const CHANGE_TOKEN = 'CHANGE_TOKEN';
+export const GET_LOGIN_INFOS = 'GET_LOGIN_INFOS';
 
 export const changeToken = (payload) => ({
   type: CHANGE_TOKEN,
   payload,
+});
+
+export const getLoginInfosAction = (name, email) => ({
+  type: GET_LOGIN_INFOS,
+  name,
+  email,
 });
 
 const requestToken = () => ({
