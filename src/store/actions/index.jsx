@@ -21,7 +21,7 @@ const requestToken = () => ({
 
 export function fetchToken() {
   return async (dispatch) => {
-    dispatch(requestToken());
+    // dispatch(requestToken());
     const URL = 'https://opentdb.com/api_token.php?command=request';
     const EXPIRED_TOKEN = '3';
     let response = await fetch(URL);
