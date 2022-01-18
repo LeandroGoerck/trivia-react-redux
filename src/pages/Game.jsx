@@ -51,7 +51,7 @@ class Game extends React.Component {
       incorrectsAnswers: '3px solid rgb(255, 0, 0)',
     });
   };
-  
+
   setBtnTimer = () => {
     const time = 30000;
     setTimeout(() => {
@@ -81,7 +81,7 @@ class Game extends React.Component {
   render() {
     const { questionsData } = this.props;
     const {
-      answered, answerOptions, correctAnswers, incorrectsAnswers, questionNumber,
+      answered, answerOptions, correctAnswers, incorrectsAnswers, isAnswered, questionNumber,
     } = this.state;
 
     return (
