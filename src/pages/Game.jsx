@@ -8,30 +8,56 @@ import { fetchQuestionsThunk } from '../store/actions';
 class Game extends React.Component {
   constructor() {
     super();
-    this.state = { answered: '', answerOptions: [], questionNumber: 0 };
+    this.state = {
+      answered: '',
+      answerOptions: [],
+      questionNumber: 0,
+      time: 30,
+      score: 0,
+    };
   }
 
   componentDidMount() {
-    const { fetchQuestions } = this.props;
+    const { fetchQuestions, questionsData } = this.props;
     fetchQuestions();
+    if (questionsData) { this.shuffleArray(); }
   }
 
   nextClick = () => {
     const finished = 4;
     const { history } = this.props;
-    const { questionNumber } = this.state;
+    const { questionNumber, score } = this.state;
 
     if (questionNumber === finished) {
       history.push('/feedback');
     } else {
-      this.setState({ questionNumber: questionNumber + 1 });
+      this.setState({ questionNumber: questionNumber + 1 }, () => (this.shuffleArray()));
     }
-
     this.setState({ answered: '' });
-    this.shuffleArray();
+    localStorage.setItem('score', JSON.stringify(score));
   };
 
-  selectAnswer = ({ target }) => this.setState({ answered: target.value });
+  selectAnswer = ({ target }) => {
+    this.setState({ answered: target.value });
+    const { questionNumber, time, score } = this.state;
+    const { questionsData } = this.props;
+    const { difficulty } = questionsData[questionNumber];
+    console.log(difficulty);
+    const TEN = 10;
+    const scoreValue = {
+      hard: 3,
+      medium: 2,
+      easy: 1,
+    };
+    let scoreTest = 0;
+    if (target.value === questionsData[questionNumber].correct_answer) {
+      this.setState({ score: score + TEN + (time * scoreValue[difficulty]) });
+      scoreTest += TEN + (time * scoreValue[difficulty]);
+    }
+    // this.setState({ score });
+    console.log(scoreTest);
+    localStorage.setItem('score', JSON.stringify(scoreTest));
+  };
 
   shuffleArray = () => {
     const randomNumber = 0.5;

@@ -37,7 +37,7 @@ class GameCard extends React.Component {
                   key={ index }
                   onClick={ selectAnswer }
                   type="button"
-                  value={ answer }
+                  value={ questionData.correct_answer }
                 >
                   { answer }
                 </button>
