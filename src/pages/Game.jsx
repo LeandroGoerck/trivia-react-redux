@@ -8,12 +8,22 @@ import { fetchQuestionsThunk } from '../store/actions';
 class Game extends React.Component {
   constructor() {
     super();
-    this.state = { answered: '', answerOptions: [], questionNumber: 0 };
+    this.state = { answered: '', answerOptions: [], questionNumber: 0, isAnswered: false, };
+    this.setBtnTimer = this.setBtnTimer.bind(this);
   }
 
   componentDidMount() {
     const { fetchQuestions } = this.props;
     fetchQuestions();
+    this.setBtnTimer();
+  }
+
+  setBtnTimer() {
+    setTimeout(() => {
+      this.setState({
+        isAnswered: true,
+      })
+    }, 30000);
   }
 
   nextClick = () => {
@@ -29,6 +39,10 @@ class Game extends React.Component {
 
     this.setState({ answered: '' });
     this.shuffleArray();
+    this.setState({
+      isAnswered: false,
+    })
+    this.setBtnTimer();
   };
 
   selectAnswer = ({ target }) => this.setState({ answered: target.value });
@@ -54,7 +68,7 @@ class Game extends React.Component {
 
   render() {
     const { questionsData } = this.props;
-    const { answered, answerOptions, questionNumber } = this.state;
+    const { answered, answerOptions, questionNumber, isAnswered } = this.state;
 
     return (
       <div>
@@ -63,25 +77,24 @@ class Game extends React.Component {
         {
           questionsData && (
             <GameCard
-              answerOptions={ answerOptions }
-              questionData={ questionsData[questionNumber] }
-              selectAnswer={ this.selectAnswer }
-              shuffleArray={ this.shuffleArray }
+              answerOptions={answerOptions}
+              questionData={questionsData[questionNumber]}
+              selectAnswer={this.selectAnswer}
+              shuffleArray={this.shuffleArray}
+              isAnswered={ isAnswered }
             />
           )
         }
 
-        {
-          answered && (
-            <button
-              data-testid="btn-next"
-              onClick={ this.nextClick }
-              type="button"
-            >
-              Next
-            </button>
-          )
-        }
+        {answered !== '' || isAnswered === true ?
+          <button
+            data-testid="btn-next"
+            onClick={this.nextClick}
+            type="button"
+          >
+            Next
+          </button>
+          : null}
       </div>
     );
   }
