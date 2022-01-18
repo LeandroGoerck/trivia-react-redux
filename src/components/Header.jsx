@@ -1,40 +1,35 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
+import PropType from 'prop-types';
+import { connect } from 'react-redux';
 
 class Header extends React.Component {
   render() {
-    const { name, email } = this.props;
+    const { email, name } = this.props;
     const img = md5(email).toString();
-    return (
-      <>
-        <img
-          src={ `https://www.gravatar.com/avatar/${img}` }
-          alt="player"
-          data-testid="header-profile-picture"
-        />
-        <p data-testid="header-player-name">
-          Jogador:
-          {name}
-        </p>
 
-        <p data-testid="header-score">
-          Score: 0
-        </p>
-      </>
+    return (
+      <header>
+        <img
+          alt="player avatar"
+          data-testid="header-profile-picture"
+          src={ `https://www.gravatar.com/avatar/${img}` }
+        />
+        <h4 data-testid="header-player-name">{ `Jogador: ${name}` }</h4>
+        <h4 data-testid="header-score">Score: 0</h4>
+      </header>
     );
   }
 }
 
 const mapStateToProps = (state) => ({
-  name: state.playerLoginReducer.name,
-  email: state.playerLoginReducer.email,
+  email: state.loginReducer.email,
+  name: state.loginReducer.name,
 });
 
 Header.propTypes = {
-  name: PropTypes.string.isRequired,
-  email: PropTypes.string.isRequired,
+  email: PropType.string.isRequired,
+  name: PropType.string.isRequired,
 };
 
 export default connect(mapStateToProps)(Header);

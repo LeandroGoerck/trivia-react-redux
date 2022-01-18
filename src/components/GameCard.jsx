@@ -1,99 +1,60 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropType from 'prop-types';
 
-class GameCard extends Component {
-  constructor() {
-    super();
-    this.state = { buttonArray: [] };
-  }
-
+class GameCard extends React.Component {
   componentDidMount() {
-    this.shuffleArray();
+    const { shuffleArray } = this.props;
+    shuffleArray();
   }
-
-  shuffleArray = () => {
-    const { data, answerClick } = this.props;
-    const {
-      category,
-      correct_answer,
-      difficulty,
-      question,
-      type,
-      incorrect_answers,
-    } = data;
-
-    const buttonArray = [
-      <button
-        key="0"
-        data-testid="correct-answer"
-        type="button"
-        onClick={ answerClick }
-        value={ correct_answer }
-      >
-        {correct_answer}
-      </button>,
-      <button
-        key="1"
-        data-testid="wrong-answer-0"
-        type="button"
-        onClick={ answerClick }
-        value={ incorrect_answers[0] }
-      >
-        {incorrect_answers[0]}
-      </button>,
-      <button
-        key="2"
-        data-testid="wrong-answer-1"
-        type="button"
-        onClick={ answerClick }
-        value={ incorrect_answers[1] }
-      >
-        {incorrect_answers[1]}
-      </button>,
-      <button
-        key="3"
-        data-testid="wrong-answer-2"
-        type="button"
-        onClick={ answerClick }
-        value={ incorrect_answers[2] }
-      >
-        {incorrect_answers[2]}
-      </button>,
-    ];
-
-    const RANDOM_NUMBER = 0.5;
-    // Consegui fazer esse codigo com ajuda desse site
-    // https://stackoverflow.com/questions/52497270/how-do-i-randomly-shuffle-an-array-containing-strings-of-names
-    if (type === 'multiple') {
-      buttonArray.sort(() => RANDOM_NUMBER - Math.random());
-    } else {
-      this.setState({ buttonArray: [buttonArray[0], buttonArray[1]] });
-    }
-
-    this.setState({ buttonArray });
-  };
 
   render() {
-    const { data, answerClick } = this.props;
-    const {
-      category,
-      correct_answer,
-      difficulty,
-      question,
-      type,
-      incorrect_answers,
-    } = data;
-    const { buttonArray } = this.state;
+    const { answerOptions, questionData, selectAnswer } = this.props;
 
     return (
-      <div>
-        <h1 data-testid="question-category">{category}</h1>
-        <h2 data-testid="question-text">{question}</h2>
+      <section>
+        <h1 data-testid="question-category">{ questionData.category }</h1>
+        <h2 data-testid="question-text">{ questionData.question }</h2>
         <div data-testid="answer-options">
-          { buttonArray }
+          {
+            answerOptions.map((answer, index) => {
+              if (questionData.incorrect_answers.includes(answer)) {
+                return (
+                  <button
+                    data-testid={ `wrong-answer-${index}` }
+                    key={ index }
+                    onClick={ selectAnswer }
+                    type="button"
+                    value={ questionData.incorrect_answers[index] }
+                  >
+                    { answer }
+                  </button>
+                );
+              }
+
+              return (
+                <button
+                  data-testid="correct-answer"
+                  key={ index }
+                  onClick={ selectAnswer }
+                  type="button"
+                  value={ answer }
+                >
+                  { answer }
+                </button>
+              );
+            })
+          }
         </div>
-      </div>
+      </section>
     );
   }
 }
 
 export default GameCard;
+
+GameCard.propTypes = {
+  answerOptions: PropType.arrayOf(Object).isRequired,
+  questionData: PropType.shape().isRequired,
+  selectAnswer: PropType.func.isRequired,
+  shuffleArray: PropType.func.isRequired,
+};
