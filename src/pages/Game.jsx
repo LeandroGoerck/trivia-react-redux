@@ -8,7 +8,13 @@ import { fetchQuestionsThunk } from '../store/actions';
 class Game extends React.Component {
   constructor() {
     super();
-    this.state = { answered: '', answerOptions: [], questionNumber: 0 };
+    this.state = {
+      answered: '',
+      answerOptions: [],
+      correctAnswers: '',
+      incorrectsAnswers: '',
+      questionNumber: 0,
+    };
   }
 
   componentDidMount() {
@@ -24,14 +30,22 @@ class Game extends React.Component {
     if (questionNumber === finished) {
       history.push('/feedback');
     } else {
-      this.setState({ questionNumber: questionNumber + 1 });
+      this.setState({
+        answered: '',
+        correctAnswers: '',
+        incorrectsAnswers: '',
+        questionNumber: questionNumber + 1,
+      }, () => this.shuffleArray());
     }
-
-    this.setState({ answered: '' });
-    this.shuffleArray();
   };
 
-  selectAnswer = ({ target }) => this.setState({ answered: target.value });
+  selectAnswer = ({ target }) => {
+    this.setState({
+      answered: target.value,
+      correctAnswers: '3px solid rgb(6, 240, 15)',
+      incorrectsAnswers: '3px solid rgb(255, 0, 0)',
+    });
+  };
 
   shuffleArray = () => {
     const randomNumber = 0.5;
@@ -48,13 +62,15 @@ class Game extends React.Component {
       const answerOptions = answers.sort(() => randomNumber - Math.random());
       this.setState({ answerOptions });
     } else {
-      this.setState({ answerOptions: [answers[1], answers[0]] });
+      this.setState({ answerOptions: [answers[0], answers[1]] });
     }
   };
 
   render() {
     const { questionsData } = this.props;
-    const { answered, answerOptions, questionNumber } = this.state;
+    const {
+      answered, answerOptions, correctAnswers, incorrectsAnswers, questionNumber,
+    } = this.state;
 
     return (
       <div>
@@ -64,6 +80,8 @@ class Game extends React.Component {
           questionsData && (
             <GameCard
               answerOptions={ answerOptions }
+              correctAnswers={ correctAnswers }
+              incorrectsAnswers={ incorrectsAnswers }
               questionData={ questionsData[questionNumber] }
               selectAnswer={ this.selectAnswer }
               shuffleArray={ this.shuffleArray }
