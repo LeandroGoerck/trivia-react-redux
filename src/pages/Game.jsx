@@ -13,6 +13,7 @@ class Game extends React.Component {
       answerOptions: [],
       correctAnswers: '',
       incorrectsAnswers: '',
+      isAnswered: false,
       questionNumber: 0,
     };
   }
@@ -20,6 +21,7 @@ class Game extends React.Component {
   componentDidMount() {
     const { fetchQuestions } = this.props;
     fetchQuestions();
+    this.setBtnTimer();
   }
 
   nextClick = () => {
@@ -34,9 +36,12 @@ class Game extends React.Component {
         answered: '',
         correctAnswers: '',
         incorrectsAnswers: '',
+        isAnswered: false,
         questionNumber: questionNumber + 1,
       }, () => this.shuffleArray());
     }
+
+    this.setBtnTimer();
   };
 
   selectAnswer = ({ target }) => {
@@ -46,6 +51,13 @@ class Game extends React.Component {
       incorrectsAnswers: '3px solid rgb(255, 0, 0)',
     });
   };
+  
+  setBtnTimer = () => {
+    const time = 30000;
+    setTimeout(() => {
+      this.setState({ isAnswered: true });
+    }, time);
+  }
 
   shuffleArray = () => {
     const randomNumber = 0.5;
@@ -82,6 +94,7 @@ class Game extends React.Component {
               answerOptions={ answerOptions }
               correctAnswers={ correctAnswers }
               incorrectsAnswers={ incorrectsAnswers }
+              isAnswered={ isAnswered }
               questionData={ questionsData[questionNumber] }
               selectAnswer={ this.selectAnswer }
               shuffleArray={ this.shuffleArray }
@@ -90,15 +103,17 @@ class Game extends React.Component {
         }
 
         {
-          answered && (
-            <button
-              data-testid="btn-next"
-              onClick={ this.nextClick }
-              type="button"
-            >
-              Next
-            </button>
-          )
+          answered !== '' || isAnswered === true
+            ? (
+              <button
+                data-testid="btn-next"
+                onClick={ this.nextClick }
+                type="button"
+              >
+                Next
+              </button>
+            )
+            : null
         }
       </div>
     );
