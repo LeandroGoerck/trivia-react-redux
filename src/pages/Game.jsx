@@ -81,7 +81,12 @@ class Game extends React.Component {
   render() {
     const { questionsData } = this.props;
     const {
-      answered, answerOptions, correctAnswers, incorrectsAnswers, isAnswered, questionNumber,
+      answered,
+      answerOptions,
+      correctAnswers,
+      incorrectsAnswers,
+      isAnswered,
+      questionNumber,
     } = this.state;
 
     return (
