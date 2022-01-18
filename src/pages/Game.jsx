@@ -48,7 +48,7 @@ class Game extends React.Component {
       const answerOptions = answers.sort(() => randomNumber - Math.random());
       this.setState({ answerOptions });
     } else {
-      this.setState({ answerOptions: [answers[1], answers[0]] });
+      this.setState({ answerOptions: [answers[0], answers[1]] });
     }
   };
 
