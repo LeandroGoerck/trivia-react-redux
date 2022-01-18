@@ -9,7 +9,12 @@ class GameCard extends React.Component {
 
   render() {
     const {
-      answerOptions, correctAnswers, incorrectsAnswers, isAnswered, questionData, selectAnswer,
+      answerOptions,
+      correctAnswers,
+      incorrectsAnswers,
+      isAnswered,
+      questionData,
+      selectAnswer,
     } = this.props;
 
     return (
