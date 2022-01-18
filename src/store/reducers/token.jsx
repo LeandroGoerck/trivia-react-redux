@@ -1,14 +1,14 @@
-import { CHANGE_TOKEN } from '../actions/index';
+import { GET_TOKEN } from '../actions/index';
 
-const INITIAL_STATE = {
-  token: '',
-};
+const INITIAL_STATE = { token: '' };
 
-export default function token(state = INITIAL_STATE, action) {
+const token = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-  case CHANGE_TOKEN:
+  case GET_TOKEN:
     return action.payload;
   default:
     return state;
   }
-}
+};
+
+export default token;
