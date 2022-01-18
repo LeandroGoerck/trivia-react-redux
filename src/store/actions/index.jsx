@@ -4,7 +4,7 @@ export const GET_QUESTION = 'GET_QUESTION';
 export const GET_TOKEN = 'GET_TOKEN';
 
 export const changeQuestion = (payload) => ({ type: CHANGE_QUESTION, payload });
-export const getLoginInfos = (name, email) => ({ type: GET_LOGIN_INFOS, email, name });
+export const getLoginInfos = (email, name) => ({ type: GET_LOGIN_INFOS, email, name });
 export const getToken = (payload) => ({ type: GET_TOKEN, payload });
 
 export const fetchToken = () => async (dispatch) => {
@@ -49,7 +49,6 @@ export const fetchQuestionsThunk = () => async (dispatch) => {
 
   const tokenData = await requestNewTokenData();
   saveToLocalStore(tokenData);
-  dispatch(getToken(tokenData));
   const questions = await requestQuestions(tokenData.token);
   return dispatch(changeQuestion(questions));
 };

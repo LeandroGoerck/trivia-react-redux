@@ -55,7 +55,7 @@ class Login extends React.Component {
           data-testid="btn-play"
           disabled={ this.enableButton() }
           type="button"
-          onClick={ () => { this.handleClick(); loginInfos(name, email); } }
+          onClick={ () => { this.handleClick(); loginInfos(email, name); } }
         >
           Play
         </button>
@@ -69,7 +69,7 @@ class Login extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  loginInfos: (name, email) => dispatch(getLoginInfos(name, email)),
+  loginInfos: (email, name) => dispatch(getLoginInfos(email, name)),
   tokenDispatch: () => dispatch(fetchToken()),
 });
 
