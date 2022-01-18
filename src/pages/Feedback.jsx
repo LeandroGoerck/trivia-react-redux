@@ -6,6 +6,7 @@ class Feedback extends React.Component {
     return (
       <section>
         <h1>Tela de Feedback</h1>
+
         <Link to="/">
           <button data-testid="btn-play-again" type="button">Play Again</button>
         </Link>
