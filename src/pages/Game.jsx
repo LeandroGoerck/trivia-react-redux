@@ -8,7 +8,12 @@ import { fetchQuestionsThunk } from '../store/actions';
 class Game extends React.Component {
   constructor() {
     super();
-    this.state = { answered: '', answerOptions: [], questionNumber: 0, isAnswered: false, };
+    this.state = {
+      answered: '',
+      answerOptions: [],
+      questionNumber: 0,
+      isAnswered: false,
+    };
     this.setBtnTimer = this.setBtnTimer.bind(this);
   }
 
@@ -19,11 +24,12 @@ class Game extends React.Component {
   }
 
   setBtnTimer() {
+    const time = 30000;
     setTimeout(() => {
       this.setState({
         isAnswered: true,
-      })
-    }, 30000);
+      });
+    }, time);
   }
 
   nextClick = () => {
@@ -41,7 +47,7 @@ class Game extends React.Component {
     this.shuffleArray();
     this.setState({
       isAnswered: false,
-    })
+    });
     this.setBtnTimer();
   };
 
@@ -77,24 +83,28 @@ class Game extends React.Component {
         {
           questionsData && (
             <GameCard
-              answerOptions={answerOptions}
-              questionData={questionsData[questionNumber]}
-              selectAnswer={this.selectAnswer}
-              shuffleArray={this.shuffleArray}
+              answerOptions={ answerOptions }
+              questionData={ questionsData[questionNumber] }
+              selectAnswer={ this.selectAnswer }
+              shuffleArray={ this.shuffleArray }
               isAnswered={ isAnswered }
             />
           )
         }
 
-        {answered !== '' || isAnswered === true ?
-          <button
-            data-testid="btn-next"
-            onClick={this.nextClick}
-            type="button"
-          >
-            Next
-          </button>
-          : null}
+        {
+          answered !== '' || isAnswered === true
+            ? (
+              <button
+                data-testid="btn-next"
+                onClick={ this.nextClick }
+                type="button"
+              >
+                Next
+              </button>
+            )
+            : null
+        }
       </div>
     );
   }

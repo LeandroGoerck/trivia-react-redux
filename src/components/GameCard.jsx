@@ -59,4 +59,5 @@ GameCard.propTypes = {
   questionData: PropType.shape().isRequired,
   selectAnswer: PropType.func.isRequired,
   shuffleArray: PropType.func.isRequired,
+  isAnswered: PropType.bool.isRequired,
 };
