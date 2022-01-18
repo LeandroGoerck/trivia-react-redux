@@ -8,7 +8,14 @@ class GameCard extends React.Component {
   }
 
   render() {
-    const { answerOptions, questionData, selectAnswer, isAnswered } = this.props;
+    const {
+      answerOptions,
+      correctAnswers,
+      incorrectsAnswers,
+      isAnswered,
+      questionData,
+      selectAnswer,
+    } = this.props;
 
     return (
       <section>
@@ -23,6 +30,7 @@ class GameCard extends React.Component {
                     data-testid={ `wrong-answer-${index}` }
                     key={ index }
                     onClick={ selectAnswer }
+                    style={ { border: incorrectsAnswers } }
                     type="button"
                     value={ questionData.incorrect_answers[index] }
                     disabled={ isAnswered }
@@ -37,6 +45,7 @@ class GameCard extends React.Component {
                   data-testid="correct-answer"
                   key={ index }
                   onClick={ selectAnswer }
+                  style={ { border: correctAnswers } }
                   type="button"
                   value={ answer }
                   disabled={ isAnswered }
@@ -56,6 +65,8 @@ export default GameCard;
 
 GameCard.propTypes = {
   answerOptions: PropType.arrayOf(Object).isRequired,
+  correctAnswers: PropType.string.isRequired,
+  incorrectsAnswers: PropType.string.isRequired,
   questionData: PropType.shape().isRequired,
   selectAnswer: PropType.func.isRequired,
   shuffleArray: PropType.func.isRequired,

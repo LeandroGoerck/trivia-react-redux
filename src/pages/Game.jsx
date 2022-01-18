@@ -11,25 +11,17 @@ class Game extends React.Component {
     this.state = {
       answered: '',
       answerOptions: [],
-      questionNumber: 0,
+      correctAnswers: '',
+      incorrectsAnswers: '',
       isAnswered: false,
+      questionNumber: 0,
     };
-    this.setBtnTimer = this.setBtnTimer.bind(this);
   }
 
   componentDidMount() {
     const { fetchQuestions } = this.props;
     fetchQuestions();
     this.setBtnTimer();
-  }
-
-  setBtnTimer() {
-    const time = 30000;
-    setTimeout(() => {
-      this.setState({
-        isAnswered: true,
-      });
-    }, time);
   }
 
   nextClick = () => {
@@ -40,18 +32,32 @@ class Game extends React.Component {
     if (questionNumber === finished) {
       history.push('/feedback');
     } else {
-      this.setState({ questionNumber: questionNumber + 1 });
+      this.setState({
+        answered: '',
+        correctAnswers: '',
+        incorrectsAnswers: '',
+        isAnswered: false,
+        questionNumber: questionNumber + 1,
+      }, () => this.shuffleArray());
     }
 
-    this.setState({ answered: '' });
-    this.shuffleArray();
-    this.setState({
-      isAnswered: false,
-    });
     this.setBtnTimer();
   };
 
-  selectAnswer = ({ target }) => this.setState({ answered: target.value });
+  selectAnswer = ({ target }) => {
+    this.setState({
+      answered: target.value,
+      correctAnswers: '3px solid rgb(6, 240, 15)',
+      incorrectsAnswers: '3px solid rgb(255, 0, 0)',
+    });
+  };
+
+  setBtnTimer = () => {
+    const time = 30000;
+    setTimeout(() => {
+      this.setState({ isAnswered: true });
+    }, time);
+  }
 
   shuffleArray = () => {
     const randomNumber = 0.5;
@@ -68,13 +74,20 @@ class Game extends React.Component {
       const answerOptions = answers.sort(() => randomNumber - Math.random());
       this.setState({ answerOptions });
     } else {
-      this.setState({ answerOptions: [answers[1], answers[0]] });
+      this.setState({ answerOptions: [answers[0], answers[1]] });
     }
   };
 
   render() {
     const { questionsData } = this.props;
-    const { answered, answerOptions, questionNumber, isAnswered } = this.state;
+    const {
+      answered,
+      answerOptions,
+      correctAnswers,
+      incorrectsAnswers,
+      isAnswered,
+      questionNumber,
+    } = this.state;
 
     return (
       <div>
@@ -84,10 +97,12 @@ class Game extends React.Component {
           questionsData && (
             <GameCard
               answerOptions={ answerOptions }
+              correctAnswers={ correctAnswers }
+              incorrectsAnswers={ incorrectsAnswers }
+              isAnswered={ isAnswered }
               questionData={ questionsData[questionNumber] }
               selectAnswer={ this.selectAnswer }
               shuffleArray={ this.shuffleArray }
-              isAnswered={ isAnswered }
             />
           )
         }
