@@ -1,8 +1,21 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 class Feedback extends React.Component {
   render() {
-    return <h1>Tela de Feedback</h1>;
+    return (
+      <section>
+        <h1>Tela de Feedback</h1>
+
+        <Link to="/">
+          <button data-testid="btn-play-again" type="button">Play Again</button>
+        </Link>
+
+        <Link to="/ranking">
+          <button data-testid="btn-ranking" type="button">Ranking</button>
+        </Link>
+      </section>
+    );
   }
 }
 

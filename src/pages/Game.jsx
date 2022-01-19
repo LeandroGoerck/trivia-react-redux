@@ -8,12 +8,20 @@ import { fetchQuestionsThunk } from '../store/actions';
 class Game extends React.Component {
   constructor() {
     super();
-    this.state = { answered: '', answerOptions: [], questionNumber: 0 };
+    this.state = {
+      answered: '',
+      answerOptions: [],
+      correctAnswers: '',
+      incorrectsAnswers: '',
+      isAnswered: false,
+      questionNumber: 0,
+    };
   }
 
   componentDidMount() {
     const { fetchQuestions } = this.props;
     fetchQuestions();
+    this.setBtnTimer();
   }
 
   nextClick = () => {
@@ -24,14 +32,32 @@ class Game extends React.Component {
     if (questionNumber === finished) {
       history.push('/feedback');
     } else {
-      this.setState({ questionNumber: questionNumber + 1 });
+      this.setState({
+        answered: '',
+        correctAnswers: '',
+        incorrectsAnswers: '',
+        isAnswered: false,
+        questionNumber: questionNumber + 1,
+      }, () => this.shuffleArray());
     }
 
-    this.setState({ answered: '' });
-    this.shuffleArray();
+    this.setBtnTimer();
   };
 
-  selectAnswer = ({ target }) => this.setState({ answered: target.value });
+  selectAnswer = ({ target }) => {
+    this.setState({
+      answered: target.value,
+      correctAnswers: '3px solid rgb(6, 240, 15)',
+      incorrectsAnswers: '3px solid rgb(255, 0, 0)',
+    });
+  };
+
+  setBtnTimer = () => {
+    const time = 30000;
+    setTimeout(() => {
+      this.setState({ isAnswered: true });
+    }, time);
+  }
 
   shuffleArray = () => {
     const randomNumber = 0.5;
@@ -54,7 +80,14 @@ class Game extends React.Component {
 
   render() {
     const { questionsData } = this.props;
-    const { answered, answerOptions, questionNumber } = this.state;
+    const {
+      answered,
+      answerOptions,
+      correctAnswers,
+      incorrectsAnswers,
+      isAnswered,
+      questionNumber,
+    } = this.state;
 
     return (
       <div>
@@ -64,6 +97,9 @@ class Game extends React.Component {
           questionsData && (
             <GameCard
               answerOptions={ answerOptions }
+              correctAnswers={ correctAnswers }
+              incorrectsAnswers={ incorrectsAnswers }
+              isAnswered={ isAnswered }
               questionData={ questionsData[questionNumber] }
               selectAnswer={ this.selectAnswer }
               shuffleArray={ this.shuffleArray }
@@ -72,15 +108,17 @@ class Game extends React.Component {
         }
 
         {
-          answered && (
-            <button
-              data-testid="btn-next"
-              onClick={ this.nextClick }
-              type="button"
-            >
-              Next
-            </button>
-          )
+          answered !== '' || isAnswered === true
+            ? (
+              <button
+                data-testid="btn-next"
+                onClick={ this.nextClick }
+                type="button"
+              >
+                Next
+              </button>
+            )
+            : null
         }
       </div>
     );
