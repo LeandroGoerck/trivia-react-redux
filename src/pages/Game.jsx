@@ -14,6 +14,9 @@ class Game extends React.Component {
       questionNumber: 0,
       time: 30,
       score: 0,
+      correctAnswers: '',
+      incorrectsAnswers: '',
+      isAnswered: false,
     };
   }
 
@@ -21,6 +24,7 @@ class Game extends React.Component {
     const { fetchQuestions, questionsData } = this.props;
     fetchQuestions();
     if (questionsData) { this.shuffleArray(); }
+    this.setBtnTimer();
   }
 
   nextClick = () => {
@@ -31,33 +35,32 @@ class Game extends React.Component {
     if (questionNumber === finished) {
       history.push('/feedback');
     } else {
-      this.setState({ questionNumber: questionNumber + 1 }, () => (this.shuffleArray()));
+      this.setState({
+        answered: '',
+        correctAnswers: '',
+        incorrectsAnswers: '',
+        isAnswered: false,
+        questionNumber: questionNumber + 1,
+      }, () => this.shuffleArray());
     }
-    this.setState({ answered: '' });
-    localStorage.setItem('score', JSON.stringify(score));
+
+    this.setBtnTimer();
   };
 
   selectAnswer = ({ target }) => {
-    this.setState({ answered: target.value });
-    const { questionNumber, time, score } = this.state;
-    const { questionsData } = this.props;
-    const { difficulty } = questionsData[questionNumber];
-    console.log(difficulty);
-    const TEN = 10;
-    const scoreValue = {
-      hard: 3,
-      medium: 2,
-      easy: 1,
-    };
-    let scoreTest = 0;
-    if (target.value === questionsData[questionNumber].correct_answer) {
-      this.setState({ score: score + TEN + (time * scoreValue[difficulty]) });
-      scoreTest += TEN + (time * scoreValue[difficulty]);
-    }
-    // this.setState({ score });
-    console.log(scoreTest);
-    localStorage.setItem('score', JSON.stringify(scoreTest));
+    this.setState({
+      answered: target.value,
+      correctAnswers: '3px solid rgb(6, 240, 15)',
+      incorrectsAnswers: '3px solid rgb(255, 0, 0)',
+    });
   };
+
+  setBtnTimer = () => {
+    const time = 30000;
+    setTimeout(() => {
+      this.setState({ isAnswered: true });
+    }, time);
+  }
 
   shuffleArray = () => {
     const randomNumber = 0.5;
@@ -74,13 +77,20 @@ class Game extends React.Component {
       const answerOptions = answers.sort(() => randomNumber - Math.random());
       this.setState({ answerOptions });
     } else {
-      this.setState({ answerOptions: [answers[1], answers[0]] });
+      this.setState({ answerOptions: [answers[0], answers[1]] });
     }
   };
 
   render() {
     const { questionsData } = this.props;
-    const { answered, answerOptions, questionNumber } = this.state;
+    const {
+      answered,
+      answerOptions,
+      correctAnswers,
+      incorrectsAnswers,
+      isAnswered,
+      questionNumber,
+    } = this.state;
 
     return (
       <div>
@@ -90,6 +100,9 @@ class Game extends React.Component {
           questionsData && (
             <GameCard
               answerOptions={ answerOptions }
+              correctAnswers={ correctAnswers }
+              incorrectsAnswers={ incorrectsAnswers }
+              isAnswered={ isAnswered }
               questionData={ questionsData[questionNumber] }
               selectAnswer={ this.selectAnswer }
               shuffleArray={ this.shuffleArray }
@@ -98,15 +111,17 @@ class Game extends React.Component {
         }
 
         {
-          answered && (
-            <button
-              data-testid="btn-next"
-              onClick={ this.nextClick }
-              type="button"
-            >
-              Next
-            </button>
-          )
+          answered !== '' || isAnswered === true
+            ? (
+              <button
+                data-testid="btn-next"
+                onClick={ this.nextClick }
+                type="button"
+              >
+                Next
+              </button>
+            )
+            : null
         }
       </div>
     );
