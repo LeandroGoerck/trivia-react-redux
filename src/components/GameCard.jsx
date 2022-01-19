@@ -28,12 +28,12 @@ class GameCard extends React.Component {
                 return (
                   <button
                     data-testid={ `wrong-answer-${index}` }
+                    disabled={ isAnswered }
                     key={ index }
                     onClick={ selectAnswer }
                     style={ { border: incorrectsAnswers } }
                     type="button"
-                    value={ questionData.incorrect_answers[index] }
-                    disabled={ isAnswered }
+                    value={ answer }
                   >
                     { answer }
                   </button>
@@ -43,11 +43,12 @@ class GameCard extends React.Component {
               return (
                 <button
                   data-testid="correct-answer"
+                  disabled={ isAnswered }
                   key={ index }
                   onClick={ selectAnswer }
                   style={ { border: correctAnswers } }
                   type="button"
-                  value={ questionData.correct_answer }
+                  value={ answer }
                 >
                   { answer }
                 </button>

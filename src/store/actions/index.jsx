@@ -2,10 +2,12 @@ export const CHANGE_QUESTION = 'CHANGE_QUESTION';
 export const GET_LOGIN_INFOS = 'GET_LOGIN_INFOS';
 export const GET_QUESTION = 'GET_QUESTION';
 export const GET_TOKEN = 'GET_TOKEN';
+export const UPDATE_SCORE = 'UPDATE_SCORE';
 
 export const changeQuestion = (payload) => ({ type: CHANGE_QUESTION, payload });
 export const getLoginInfos = (email, name) => ({ type: GET_LOGIN_INFOS, email, name });
 export const getToken = (payload) => ({ type: GET_TOKEN, payload });
+export const updateScore = (payload) => ({ type: UPDATE_SCORE, payload });
 
 export const fetchToken = () => async (dispatch) => {
   const URL = 'https://opentdb.com/api_token.php?command=request';
