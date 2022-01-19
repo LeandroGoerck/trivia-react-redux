@@ -11,23 +11,26 @@ class Game extends React.Component {
     this.state = {
       answered: '',
       answerOptions: [],
+      questionNumber: 0,
+      time: 30,
+      score: 0,
       correctAnswers: '',
       incorrectsAnswers: '',
       isAnswered: false,
-      questionNumber: 0,
     };
   }
 
   componentDidMount() {
-    const { fetchQuestions } = this.props;
+    const { fetchQuestions, questionsData } = this.props;
     fetchQuestions();
+    if (questionsData) { this.shuffleArray(); }
     this.setBtnTimer();
   }
 
   nextClick = () => {
     const finished = 4;
     const { history } = this.props;
-    const { questionNumber } = this.state;
+    const { questionNumber, score } = this.state;
 
     if (questionNumber === finished) {
       history.push('/feedback');

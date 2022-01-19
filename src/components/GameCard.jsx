@@ -47,8 +47,7 @@ class GameCard extends React.Component {
                   onClick={ selectAnswer }
                   style={ { border: correctAnswers } }
                   type="button"
-                  value={ answer }
-                  disabled={ isAnswered }
+                  value={ questionData.correct_answer }
                 >
                   { answer }
                 </button>
