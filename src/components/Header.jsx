@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 class Header extends React.Component {
   render() {
-    const { email, name } = this.props;
+    const { email, name, score } = this.props;
     const img = md5(email).toString();
 
     return (
@@ -16,20 +16,21 @@ class Header extends React.Component {
           src={ `https://www.gravatar.com/avatar/${img}` }
         />
         <h4 data-testid="header-player-name">{ `Jogador: ${name}` }</h4>
-        <h4 data-testid="header-score">Score: 0</h4>
+        <h4 data-testid="header-score">{`Score: ${score}`}</h4>
       </header>
     );
   }
 }
 
 const mapStateToProps = (state) => ({
-  email: state.loginReducer.email,
-  name: state.loginReducer.name,
+  email: state.player.email,
+  name: state.player.name,
 });
 
 Header.propTypes = {
   email: PropType.string.isRequired,
   name: PropType.string.isRequired,
+  score: PropType.number.isRequired,
 };
 
 export default connect(mapStateToProps)(Header);
