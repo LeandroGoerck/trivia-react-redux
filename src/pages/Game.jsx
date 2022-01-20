@@ -3,7 +3,7 @@ import PropType from 'prop-types';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
 import GameCard from '../components/GameCard';
-import { fetchQuestionsThunk, updateScore } from '../store/actions';
+import { correct, fetchQuestionsThunk } from '../store/actions';
 
 class Game extends React.Component {
   constructor() {
@@ -11,27 +11,24 @@ class Game extends React.Component {
     this.state = {
       answered: '',
       answerOptions: [],
-      questionNumber: 0,
-      time: 30,
       correctAnswers: '',
       incorrectsAnswers: '',
       isAnswered: false,
+      questionNumber: 0,
+      timer: 30,
     };
   }
 
   componentDidMount() {
     const { fetchQuestions, questionsData } = this.props;
     fetchQuestions();
-    if (questionsData) { this.shuffleArray(); }
+    if (questionsData) this.shuffleArray();
     this.setBtnTimer();
-
-    // const { time } = this.state;
-    // setInterval(() => { this.setState(() => ({ time: time - 1 })); }, oneSecond);
   }
 
   nextClick = () => {
     const finished = 4;
-    const { history, score } = this.props;
+    const { history } = this.props;
     const { questionNumber } = this.state;
 
     if (questionNumber === finished) {
@@ -43,57 +40,45 @@ class Game extends React.Component {
         incorrectsAnswers: '',
         isAnswered: false,
         questionNumber: questionNumber + 1,
-        time: 30,
+        timer: 30,
       }, () => this.shuffleArray());
     }
-    localStorage.setItem('score', JSON.stringify(score));
+
     this.setBtnTimer();
   };
 
   selectAnswer = ({ target }) => {
+    const TEN = 10;
+    const { questionNumber, timer } = this.state;
+    const scoreValue = { easy: 1, hard: 3, medium: 2 };
+    const { assertions, itsCorrect, questionsData, score } = this.props;
+    const { difficulty } = questionsData[questionNumber];
+
+    if (target.value === questionsData[questionNumber].correct_answer) {
+      itsCorrect((assertions + 1), (score + TEN + (timer * scoreValue[difficulty])));
+    }
+
     this.setState({
       answered: target.value,
       correctAnswers: '3px solid rgb(6, 240, 15)',
       incorrectsAnswers: '3px solid rgb(255, 0, 0)',
       isAnswered: true,
     });
-    const { questionNumber, time } = this.state;
-    const { questionsData, updtScore, score } = this.props;
-    const { difficulty } = questionsData[questionNumber];
-    console.log(difficulty);
-    const TEN = 10;
-    const scoreValue = {
-      hard: 3,
-      medium: 2,
-      easy: 1,
-    };
-    // let score = 0;
-    if (target.value === questionsData[questionNumber].correct_answer) {
-      updtScore(score + TEN + (time * scoreValue[difficulty]));
-      // this.setState({ score: score + TEN + (time * scoreValue[difficulty]) }, () => updtScore(this.state.score));
-    }
+
     localStorage.setItem('score', JSON.stringify(score));
   };
 
   setBtnTimer = () => {
     const oneSecond = 1000;
     const { answered } = this.state;
+
     const timeCowntdown = setInterval(() => {
-      const { time } = this.state;
-      if (time >= 1
-        && answered === '') {
-        this.setState({
-          time: time - 1,
-        });
-        console.log(time);
-      }
-      if (time === 0) {
-        this.setState({ isAnswered: true });
-      }
+      const { timer } = this.state;
+      if (timer >= 1 && answered === '') this.setState({ timer: timer - 1 });
+      if (timer === 0) this.setState({ isAnswered: true });
     }, oneSecond);
-    if (answered !== '') {
-      clearInterval(timeCowntdown);
-    }
+
+    if (answered !== '') clearInterval(timeCowntdown);
   };
 
   shuffleArray = () => {
@@ -124,17 +109,15 @@ class Game extends React.Component {
       incorrectsAnswers,
       isAnswered,
       questionNumber,
-      time,
-      // score,
+      timer,
     } = this.state;
 
     return (
       <div>
         <Header score={ score } />
-        <span>
-          {'Tempo: '}
-          {time}
-        </span>
+
+        <span>{ `Tempo: ${timer}` }</span>
+
         {
           questionsData && (
             <GameCard
@@ -150,17 +133,15 @@ class Game extends React.Component {
         }
 
         {
-          answered !== '' || isAnswered === true
-            ? (
-              <button
-                data-testid="btn-next"
-                onClick={ this.nextClick }
-                type="button"
-              >
-                Next
-              </button>
-            )
-            : null
+          answered !== '' || isAnswered === true ? (
+            <button
+              data-testid="btn-next"
+              onClick={ this.nextClick }
+              type="button"
+            >
+              Next
+            </button>
+          ) : null
         }
       </div>
     );
@@ -168,21 +149,23 @@ class Game extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+  assertions: state.player.assertions,
   questionsData: state.gameReducer.questions.results,
   score: state.player.score,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   fetchQuestions: () => dispatch(fetchQuestionsThunk()),
-  updtScore: (score) => dispatch(updateScore(score)),
+  itsCorrect: (assertions, score) => dispatch(correct(assertions, score)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);
 
 Game.propTypes = {
-  history: PropType.shape().isRequired,
+  assertions: PropType.number.isRequired,
   fetchQuestions: PropType.func.isRequired,
+  history: PropType.shape().isRequired,
+  itsCorrect: PropType.func.isRequired,
   questionsData: PropType.arrayOf(Object).isRequired,
-  updtScore: PropType.func.isRequired,
   score: PropType.number.isRequired,
 };
