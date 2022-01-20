@@ -1,18 +1,13 @@
-import { GET_LOGIN_INFOS, UPDATE_SCORE } from '../actions';
+import { CORRECT, GET_LOGIN_INFOS } from '../actions';
 
-const INITIAL_STATE = {
-  name: '',
-  assertions: '',
-  score: 0,
-  gravatarEmail: '',
-};
+const INITIAL_STATE = { assertions: 0, gravatarEmail: '', name: '', score: 0 };
 
 const player = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+  case CORRECT:
+    return { ...state, assertions: action.assertions, score: action.score };
   case GET_LOGIN_INFOS:
-    return { ...state, email: action.email, name: action.name };
-  case UPDATE_SCORE:
-    return { ...state, score: action.payload };
+    return { ...state, gravatarEmail: action.email, name: action.name };
   default:
     return state;
   }
